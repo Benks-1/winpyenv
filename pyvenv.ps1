@@ -1,13 +1,16 @@
 param (
     [Parameter(Position=0)]
-    [ValidateSet("activate", "create", "list", "delete", "help")]
+    [ValidateSet("activate", "create", "list", "delete", "pip", "shell", "help")]
     [string]$command,
 
     [Parameter()]
     [string]$EnvName,
 
     [Parameter()]
-    [string]$Version
+    [string]$Version,
+
+    [Parameter(ValueFromRemainingArguments=$true)]
+    [string[]]$Parameters
 )
 
 $envsPath = $env:PY_ENVS_PATH
@@ -52,16 +55,61 @@ function Activate-Venv {
         exit 1
     }
 
-    $activateScript = Join-Path -Path $venvPath -ChildPath "Scripts\Activate.ps1"
+    $pip = Join-Path -Path $venvPath -ChildPath "Scripts\Activate.ps1"
     
-    if (-not (Test-Path -Path $activateScript)) {
+    if (-not (Test-Path -Path $pip)) {
         Write-Host "Error: Activate script not found in '$venvPath\Scripts'." -ForegroundColor Red
         exit 1
     }
 
     Write-Host "Activating virtual environment '$EnvName '..." -ForegroundColor Green
-    . $activateScript
+    . $pip
     Write-Host "Activated '$EnvName '."
+}
+
+function Invoke-Pip {
+    param (
+        [string]$EnvName,
+        [string]$ArgsString
+    )
+
+    $Args = $ArgsString -split ' '
+    
+    $venvPath = Join-Path -Path $envsPath -ChildPath $EnvName 
+    if (-not (Test-Path -Path $venvPath)) {
+        Write-Host "Error: Virtual environment '$EnvName ' does not exist in '$envsPath'." -ForegroundColor Red
+        exit 1
+    }
+
+    $pip = Join-Path -Path $venvPath -ChildPath "Scripts\pip.exe"
+    
+    if (-not (Test-Path -Path $pip)) {
+        Write-Host "Error: Pip not found in '$venvPath\Scripts'." -ForegroundColor Red
+        exit 1
+    }
+
+    & $pip @Args
+}
+
+function Start-PythonShell {
+    param (
+        [string]$EnvName
+    )
+
+    $venvPath = Join-Path -Path $envsPath -ChildPath $EnvName 
+    if (-not (Test-Path -Path $venvPath)) {
+        Write-Host "Error: Virtual environment '$EnvName' does not exist in '$envsPath'." -ForegroundColor Red
+        return
+    }
+
+    $pythonExe = Join-Path -Path $venvPath -ChildPath "Scripts\python.exe"
+    
+    if (-not (Test-Path -Path $pythonExe)) {
+        Write-Host "Error: Python executable not found in '$venvPath\Scripts'." -ForegroundColor Red
+        return
+    }
+
+    & $pythonExe
 }
 
 function Create-Venv {
@@ -169,6 +217,12 @@ switch ($command) {
             exit 1
         }
         Delete-Venv -EnvName $EnvName  
+    }
+    "pip" {
+        Invoke-Pip -EnvName $EnvName -ArgsString ($Parameters -join ' ')
+    }
+    "shell"{
+        Start-PythonShell -EnvName $EnvName
     }
     "help" { Show-Help }
     default { Show-Help }

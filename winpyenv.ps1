@@ -50,11 +50,11 @@ Examples:
 }
 
 function Interpreter {
-    ./pywinget.ps1 $command -Version $Version -Scope $Scope
+    pywinget.exe $command -Version $Version -Scope $Scope
 }
 
 function Venv {
-    ./pyvenv.ps1 $command -Version $Version -EnvName $EnvName
+    pyvenv.exe $command -Version $Version -EnvName $EnvName
 }
 
 switch ($tool) {

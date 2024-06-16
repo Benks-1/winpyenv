@@ -2,17 +2,21 @@
 Powershell wrapper around winget and python launcher
 
 ## Reason
-I wanted to create a functionality like `conda activate` without having the need to install `conda` and I didn't want to `pip install` a tool because I don't want to have it version specific, but instead for all python versions installed on my machine.
+I wanted to create a functionality like `conda activate` without having the need to install `conda` and I didn't want to `pip install` a tool because I don't want to have it version specific, but instead for all python versions installed on my machine. And since Python Launcher is compatible with azure yaml pipelines this makes the most sense.
 
 ## Instalation process
 
-- To enable the scripts to be available through the powershell/pwsh console, simply add the folder where you have downloaded the files into your "System Environmental Variables" (PATH is ok)
+- To enable the scripts to be available through the powershell/pwsh console, simply add the folder where you have downloaded the files into your "System Environmental Variables" (PATH is ok). Make sure that only the exe files are in there otherwise you will have issues with ps1 that is digitally not signed.
 
 - To enable venv creation add a "System Environment Variable" called ENVS_PATH. All venv's that you create with this tool will be by default stored in that directory.
 
 - Note: if you add a "System Environment Variable" called PYLAUNCHER_ALLOW_INSTALL and set any value, Launcher will try to install the python version specified if it is missing on the machine and if it is available. [Python documentation](https://docs.python.org/3/using/windows.html#install-on-demand)
 
-- Issues: If you end up getting this message `winpyenv: File C:\path\to\winpyenv.ps1 cannot be loaded. The file C:\path\to\winpyenv.ps1 is not digitally signed. You cannot run this script on the current system. For more information about running scripts and setting execution policy, see about_Execution_Policies at https://go.microsoft.com/fwlink/?LinkID=135170.`. Create a copy the files, remove the original, and rename the file names back as the original (most probably you will have to remove ' copy' from all 3 files.) 
+
+- The powershell scripts are here as a reference of what the exe files are compiled from. And you can modify it also to meet your needs and compile it yourself.
+  - Issues: If you end up getting this message `winpyenv: File C:\path\to\winpyenv.ps1 cannot be loaded. The file C:\path\to\winpyenv.ps1 is not digitally signed. You cannot run this script on the current system. For more information about running scripts and setting execution policy, see about_Execution_Policies at https://go.microsoft.com/fwlink/?LinkID=135170.`.
+    - Create a copy the files, remove the original, and rename the file names back as the original (most probably you will have to remove ' copy' from all 3 files.) 
+    - Or use this: `PowerShell -ExecutionPolicy Bypass -File .\winpyenv.ps1`
 
 ## Usage
 

@@ -24,8 +24,8 @@ Usage: winpyenv <tool> <command>
 Tools And Comands:
 - interpreter           Access Python interpreter tool.
     list-available              Provides a list of python versions that are available for download via winget.
-    install <Version> [scope]   Runs the instalation process of python (It will ask for version and scope if not defined).
-    remove <Version>            Removes a specific python instalation (It will ask for version if not defined).
+    install <Version> [scope]   Runs the installation process of python (It will ask for version and scope if not defined).
+    remove <Version>            Removes a specific python installation (It will ask for version if not defined).
     list-installed              Provides a list of all available python installations on the machine
 - venv                  Access Python virtual environment tool.
     activate <EnvName>          Activate the specified virtual environment.

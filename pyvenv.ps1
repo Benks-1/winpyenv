@@ -207,7 +207,7 @@ switch ($command) {
             Show-Help
             exit 1
         }
-        Create-Venv -EnvName $EnvName  -Version $Version 
+        Create-Venv -EnvName $EnvName -Version $Version 
     }
     "list" { List-Venvs }
     "delete" { 

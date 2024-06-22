@@ -1,36 +1,32 @@
+# Restart as Admin if not started as such.
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+{
+    Start-Process pwsh.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    exit
+}
+
 # Define the names for the self-signed certificates
-$certificateNames = @("cert1", "cert2", "cert3")
+$certificateNames = @("pyvenv", "pywinget", "winpyenv")
 
-# Get the current script location
-$scriptPath = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
+# žUsing the folder path of the current location of this script
+$scriptPath = $PSScriptRoot
 
-# Create self-signed certificates and export them to PFX files in the current script location
+# Create and install self-signed certificates
 foreach ($name in $certificateNames) {
-    $cert = New-SelfSignedCertificate -DnsName "$name.local" -CertStoreLocation "cert:\LocalMachine\My"
-    $password = ConvertTo-SecureString -String "password" -Force -AsPlainText
-    $pfxPath = Join-Path $scriptPath "$name.pfx"
-    Export-PfxCertificate -Cert $cert -FilePath $pfxPath -Password $password
+    # Create a self-signed certificate
+    $cert = New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine -Subject "CN=$name" -KeySpec Signature -Type CodeSigningCert
+
+    # Assign the certificate to a file (if it exists)
+    $fileToSign = Join-Path $scriptPath "$name.ps1"
+    if (Test-Path $fileToSign) {
+        Set-AuthenticodeSignature -FilePath $fileToSign -Certificate $cert
+        Write-Host "Certificate assigned to $fileToSign"
+    } else {
+        Write-Host "File $fileToSign not found."
+    }
 }
-
-# Install certificates to the LocalMachine store
-foreach ($name in $certificateNames) {
-    $pfxPath = Join-Path $scriptPath "$name.pfx"
-    $pfx = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
-    $pfx.Import($pfxPath, $password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable)
-    $store = New-Object System.Security.Cryptography.X509Certificates.X509Store "My", "LocalMachine"
-    $store.Open([System.Security.Cryptography.X509Certificates.OpenFlags]::ReadWrite)
-    $store.Add($pfx)
-    $store.Close()
-}
-
-$cert = @(Get-ChildItem -Path cert:\LocalMachine\My -CodeSigningCert)[0]
-Set-AuthenticodeSignature -FilePath "C:\Path\To\Your\files.ps1" -Certificate $cert
-
 # Add the current folder to the system PATH environment variable
 $env:Path += ";" + (Get-Location).Path
-
-# Ask the user for the PY_ENVS_PATH and set it
-# ... [previous script content]
 
 # Use a folder browser dialog to ask the user for the PY_ENVS_PATH
 Add-Type -AssemblyName System.Windows.Forms

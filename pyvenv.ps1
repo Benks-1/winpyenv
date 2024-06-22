@@ -16,7 +16,7 @@ param (
 $envsPath = $env:PY_ENVS_PATH
 
 if (-not $envsPath) {
-    Write-Host "Error: ENVS_PATH environment variable is not set." -ForegroundColor Red
+    Write-Host "Error: PY_ENVS_PATH environment variable is not set." -ForegroundColor Red
     exit 1
 }
 
@@ -228,4 +228,3 @@ switch ($command) {
     default { Show-Help }
 
 }
-

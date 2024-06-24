@@ -6,17 +6,14 @@ I wanted to create a functionality like `conda activate` without having the need
 
 ## Instalation process
 
-- To enable the scripts to be available through the powershell/pwsh console, simply add the folder where you have downloaded the files into your "System Environmental Variables" (PATH is ok). Make sure that only the exe files are in there otherwise you will have issues with ps1 that is digitally not signed.
+- To enable the scripts to be available through the powershell/pwsh console, simply add the folder where you have downloaded the files into your "System Environmental Variables" (PATH is ok). You will have issues with ps1 that is digitally not signed, if you try to run it now.
 
-- To enable venv creation add a "System Environment Variable" called ENVS_PATH. All venv's that you create with this tool will be by default stored in that directory.
+- To enable venv creation add a "System Environment Variable" called PY_ENVS_PATH. All venv's that you create with this tool will be by default stored in that directory.
 
 - Note: if you add a "System Environment Variable" called PYLAUNCHER_ALLOW_INSTALL and set any value, Launcher will try to install the python version specified if it is missing on the machine and if it is available. [Python documentation](https://docs.python.org/3/using/windows.html#install-on-demand)
 
 
-- The powershell scripts are here as a reference of what the exe files are compiled from. And you can modify it also to meet your needs and compile it yourself.
-  - Issues: If you end up getting this message `winpyenv: File C:\path\to\winpyenv.ps1 cannot be loaded. The file C:\path\to\winpyenv.ps1 is not digitally signed. You cannot run this script on the current system. For more information about running scripts and setting execution policy, see about_Execution_Policies at https://go.microsoft.com/fwlink/?LinkID=135170.`.
-    - Create a copy the files, remove the original, and rename the file names back as the original (most probably you will have to remove ' copy' from all 3 files.) 
-    - Or use this: `PowerShell -ExecutionPolicy Bypass -File .\winpyenv.ps1`
+- You should use the `install.ps1` file, to properly install these scripts. It should create required self-singed code certificates, and assign them to the script.
 
 ## Usage
 

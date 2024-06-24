@@ -1,19 +1,22 @@
 param (
     [Parameter(Position=0)]
-    [ValidateSet("activate", "create", "list", "delete", "help")]
+    [ValidateSet("activate", "create", "list", "delete", "pip", "shell", "help")]
     [string]$command,
 
     [Parameter()]
     [string]$EnvName,
 
     [Parameter()]
-    [string]$Version
+    [string]$Version,
+
+    [Parameter(ValueFromRemainingArguments=$true)]
+    [string[]]$Parameters
 )
 
 $envsPath = $env:PY_ENVS_PATH
 
 if (-not $envsPath) {
-    Write-Host "Error: ENVS_PATH environment variable is not set." -ForegroundColor Red
+    Write-Host "Error: PY_ENVS_PATH environment variable is not set." -ForegroundColor Red
     exit 1
 }
 
@@ -52,16 +55,61 @@ function Activate-Venv {
         exit 1
     }
 
-    $activateScript = Join-Path -Path $venvPath -ChildPath "Scripts\Activate.ps1"
+    $pip = Join-Path -Path $venvPath -ChildPath "Scripts\Activate.ps1"
     
-    if (-not (Test-Path -Path $activateScript)) {
+    if (-not (Test-Path -Path $pip)) {
         Write-Host "Error: Activate script not found in '$venvPath\Scripts'." -ForegroundColor Red
         exit 1
     }
 
     Write-Host "Activating virtual environment '$EnvName '..." -ForegroundColor Green
-    . $activateScript
+    . $pip
     Write-Host "Activated '$EnvName '."
+}
+
+function Invoke-Pip {
+    param (
+        [string]$EnvName,
+        [string]$ArgsString
+    )
+
+    $Args = $ArgsString -split ' '
+    
+    $venvPath = Join-Path -Path $envsPath -ChildPath $EnvName 
+    if (-not (Test-Path -Path $venvPath)) {
+        Write-Host "Error: Virtual environment '$EnvName ' does not exist in '$envsPath'." -ForegroundColor Red
+        exit 1
+    }
+
+    $pip = Join-Path -Path $venvPath -ChildPath "Scripts\pip.exe"
+    
+    if (-not (Test-Path -Path $pip)) {
+        Write-Host "Error: Pip not found in '$venvPath\Scripts'." -ForegroundColor Red
+        exit 1
+    }
+
+    & $pip @Args
+}
+
+function Start-PythonShell {
+    param (
+        [string]$EnvName
+    )
+
+    $venvPath = Join-Path -Path $envsPath -ChildPath $EnvName 
+    if (-not (Test-Path -Path $venvPath)) {
+        Write-Host "Error: Virtual environment '$EnvName' does not exist in '$envsPath'." -ForegroundColor Red
+        return
+    }
+
+    $pythonExe = Join-Path -Path $venvPath -ChildPath "Scripts\python.exe"
+    
+    if (-not (Test-Path -Path $pythonExe)) {
+        Write-Host "Error: Python executable not found in '$venvPath\Scripts'." -ForegroundColor Red
+        return
+    }
+
+    & $pythonExe
 }
 
 function Create-Venv {
@@ -159,7 +207,7 @@ switch ($command) {
             Show-Help
             exit 1
         }
-        Create-Venv -EnvName $EnvName  -Version $Version 
+        Create-Venv -EnvName $EnvName -Version $Version 
     }
     "list" { List-Venvs }
     "delete" { 
@@ -170,8 +218,45 @@ switch ($command) {
         }
         Delete-Venv -EnvName $EnvName  
     }
+    "pip" {
+        Invoke-Pip -EnvName $EnvName -ArgsString ($Parameters -join ' ')
+    }
+    "shell"{
+        Start-PythonShell -EnvName $EnvName
+    }
     "help" { Show-Help }
     default { Show-Help }
 
 }
-
+# SIG # Begin signature block
+# MIIFdwYJKoZIhvcNAQcCoIIFaDCCBWQCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCl08ToMHNIYSO4
+# opWxdfvmWGZXQrYNHn7YyJ4A3MRhGKCCAvYwggLyMIIB2qADAgECAhAuvWaLwrIA
+# tEXA50caD7cLMA0GCSqGSIb3DQEBBQUAMBExDzANBgNVBAMMBnB5dmVudjAeFw0y
+# NDA2MjQwNzEwMDRaFw0yNTA2MjQwNzMwMDRaMBExDzANBgNVBAMMBnB5dmVudjCC
+# ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOJ29/AUPfumYx6BPYG7NBho
+# VQyKoV/zrWM+M7HHTqGGbec1jk/bcywtnb2ff3d7PHLNi3Q0e/NUcR86kSJgNGgE
+# AxK6WAXYdhPt3k6UP32xm6LyLsgCX/NZoRCh9IomGgEU/nPgvT+x6Wk2oo83vi7f
+# ec0S84BdpsMrfQJHVQUiHjolr477F3Ft57KeH8Py+HidomSWDlb8kwnm+jbEF74u
+# ZavN1E8QHXyScJdOfbaZT3aJCL/pPI4nB8yrWEZ9ePyraDB8fOEFZNKWMndF97F3
+# SOpneaPkkM67RpLuexzo1QaVFq/0A6B0fEau6CMh6KmDksOGji2hsoRNfnpr0eUC
+# AwEAAaNGMEQwDgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0G
+# A1UdDgQWBBRobrlzDvlT0peWrkHP/wB6XSw2lzANBgkqhkiG9w0BAQUFAAOCAQEA
+# JfYDK/W6D0pDxE4H3RpifI6lDuXv7V1CoDVjYmW0Z0SsO8ZQpI74MbUJahLaz9dl
+# WHmbZc086mNxezWomK5YKocbsm5YIsFJXVAOw+4AwAus+mbcA3BK/uQ3vZ664MCX
+# eKVq2z/piZRanv/iHYF+h7NovG6AaVfW/nyeHiZ6jZqtJ3ENzxPCfVL/YIpZ7ELL
+# aFu4OqKXwcB3e5X0ODx1eSJXgqGf1BIwV8PtYycmFTXhbY/Bv9MCQICEqJXHT+e5
+# 3fmVoboib7qCeok7gebOiYFXdwfel4NfP2DjxHG+WNcXaC6NyHlgNXhZsVI6p3Zc
+# MX1YiitnKu1g1dFSJJXoIDGCAdcwggHTAgEBMCUwETEPMA0GA1UEAwwGcHl2ZW52
+# AhAuvWaLwrIAtEXA50caD7cLMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQBgjcC
+# AQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYB
+# BAGCNwIBCzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEILhopmqB3huU
+# FMaRg0US6KUGKlz0cll27NMGtjIrYz9sMA0GCSqGSIb3DQEBAQUABIIBACKNr/S9
+# 2csC8Wj3w7f0e1lEZU/jk93bBK6ZpxH+fQzHkJosGUorVUr+7RgVFGNb0ANXxi03
+# qrO5mtivRJ+h7Jv22nu4aOkIUEk1p5sRNRmoTYcAACk2MAmR8buJgRhfozDmn5uV
+# 2dPUO8gi6vPKKlaqJVCqfao4N3ixKizobjOemO81WQK2qAHK6wLztdzmmlm7iPfv
+# aU9muzDqFyTJsbqC9crT8Bd6zaUDeVrLKBwBPD2Qb7QMrX1Y6spoAF/2OIUQE41I
+# F06XqJjxfkfbGchmi1clm9cyZ/3hmlnsLPwOPDUFPVC0SmrlzQpHQ/AHRMxfjHff
+# YkNbZkDEm3hFVo8=
+# SIG # End signature block

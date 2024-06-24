@@ -50,11 +50,11 @@ Examples:
 }
 
 function Interpreter {
-    pywinget.exe $command -Version $Version -Scope $Scope
+    pywinget.ps1 $command -Version $Version -Scope $Scope
 }
 
 function Venv {
-    pyvenv.exe $command -Version $Version -EnvName $EnvName
+    pyvenv.ps1 $command -Version $Version -EnvName $EnvName
 }
 
 switch ($tool) {
@@ -69,3 +69,35 @@ switch ($tool) {
     default { Show-Help }
 
 }
+# SIG # Begin signature block
+# MIIFfQYJKoZIhvcNAQcCoIIFbjCCBWoCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDVXCrkLlDNSXk3
+# jJiL0/pFT5smwjEL/cL/td3Nw8dnEKCCAvowggL2MIIB3qADAgECAhAfEv9J6PXd
+# vkg+ar7/sAssMA0GCSqGSIb3DQEBBQUAMBMxETAPBgNVBAMMCHdpbnB5ZW52MB4X
+# DTI0MDYyNDA3MTAwN1oXDTI1MDYyNDA3MzAwN1owEzERMA8GA1UEAwwId2lucHll
+# bnYwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDi/v5eKsbBEzBLjvz6
+# YARzbelRKTkjECiu9K0pOE7boGvRbHkiINcLL16ApPnNDQsRRVjl8zYynUOu7rLG
+# ydraIZztiJFPUrq45yxD4XJp3DoOCXE4zpxgol67bizJikRDCBmKMhyPusq6sjND
+# 3VDkL2v4gYEOnhSAEXKY2smnn5so23keqUAdU62c4SHzHtv+gRF0IbZ38dLuxGeY
+# Rj4w5gX5xcMtAVSzh5nx2zz5Qw4NAdscRiBko6le4RELTN09SuMvWTRzCESPjLT9
+# VPu5/P5jeg9WQPJohSYA2uEiSRfdMs28tFkwpNK/gvIPJVOe276wknAFFA51v3iD
+# 0IElAgMBAAGjRjBEMA4GA1UdDwEB/wQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcD
+# AzAdBgNVHQ4EFgQUvfoXlscXkvAYmHVVGbpIW0zH9yYwDQYJKoZIhvcNAQEFBQAD
+# ggEBAK56/+IpOU6z/jKKygpEQ7x08D2gviHfKwS+i8vMLtZC2XpQuiU/BTOfbFx4
+# AYKGg/C/EoWov0eW8PmCdgzjnKhL9Fcaz1y+XOXXbRKIQ2j/0F/VKQcLYdW0EzxO
+# FuZ898FZSvo7QEpiWb/z+gfvtRnIkk9K6BKkpjZ9/JRx0d4Q7sqX4qQlX/1gz2B3
+# jvx/PuQtCwKr2tMeW6oVCUmZM7I5g1gaO1hZusfGyqgkPN3PCEbcy8riKrI8rZ/r
+# 9XDFUY0yjTIoAF+EJuvrD2MSDch3mGtIRqvLGWLmkWXH4Jb56CaobkL8Yk4/jzXU
+# l07Xm0sp+poIn2K+bPZ2c52hnnUxggHZMIIB1QIBATAnMBMxETAPBgNVBAMMCHdp
+# bnB5ZW52AhAfEv9J6PXdvkg+ar7/sAssMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisG
+# AQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQw
+# HAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIIaQ
+# MpeP582djBbrFE94gl9o76vvsQWXA/CVPDWG/xlFMA0GCSqGSIb3DQEBAQUABIIB
+# AFEjBzV1hzumTvOlLlX0Pc41UJKdvugPWzaV1nwfP7qKy0wPLsJQgYe9qPeyvy2J
+# Mj9kpqqpSNVlKR2Va8/CQcn+vgPXjfzNf9kEMaouPIDJfFa0JGcbhXl4qs0mqmU+
+# N3i8Aamc3JUZ6/NgKPbjSiSPqMdKvg0437HAx/7wICvj3WLfhNKYmv9zok5r3yxk
+# xQm+Jr2G1TMOgC9LFTVH9tU8Vrc6yqm0GkwN3h9XtZ+Fx0zs/zzuoD5AundSGTwr
+# CmOZV05aryIonPgwRqOY9DzGLjT5/4bBTPD9ASO+iTa6x+vK1nvztsZAgsufdsMW
+# edRJgKa/0M+2r+OxOUYjiz4=
+# SIG # End signature block

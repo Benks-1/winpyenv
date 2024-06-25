@@ -26,7 +26,13 @@ foreach ($name in $certificateNames) {
     }
 }
 # Add the current folder to the system PATH environment variable
-$env:Path += ";" + (Get-Location).Path
+$newPath = (Get-Location).Path
+$currentPath = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
+
+if ($currentPath -notlike "*$newPath*") {
+    $newPathToAdd = $currentPath + ";" + $newPath
+    [System.Environment]::SetEnvironmentVariable("Path", $newPathToAdd, "Machine")
+}
 
 # Use a folder browser dialog to ask the user for the PY_ENVS_PATH
 Add-Type -AssemblyName System.Windows.Forms

@@ -390,7 +390,12 @@ class App {
         if (Test-Path -Path $executable){
             $global = "$($this.APPS_PATH)\$AppName.ps1"
             $scriptContent = @"
-`& '$executable' `"$args`"
+param (
+    [Parameter(ValueFromRemainingArguments=`$true)]
+    [string[]]`$Parameters
+)
+`$pth = '$executable'
+`& `$pth @Parameters
 "@
             Set-Content -Path $global -Value $scriptContent
             $this.handler.Create($AppName, $EnvName)

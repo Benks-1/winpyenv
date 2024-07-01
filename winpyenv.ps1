@@ -29,7 +29,7 @@ param (
 class JsonFileHandler {
     [string]$FilePath
 
-    JsonFileHandler([string]$filePath) {
+    JsonFileHandler() {
         $this.FilePath = "$Env:PY_APPS_PATH\mapping.json"
 
         if (-Not (Test-Path -Path $this.FilePath)) {
@@ -362,12 +362,14 @@ class Interpreter {
 class App {
     [Venv]$venv
     [JsonFileHandler]$handler
-    [string]$ENVS_PATH = $Env:PY_ENVS_PATH
-    [string]$APPS_PATH = $Env:PY_APPS_PATH
+    [string]$ENVS_PATH
+    [string]$APPS_PATH
 
     App() {
         $this.venv = [Venv]::new()
         $this.handler = [JsonFileHandler]::new()
+        $this.ENVS_PATH = $Env:PY_ENVS_PATH
+        $this.APPS_PATH = $Env:PY_APPS_PATH
     }
 
     [void] ShowApps(){

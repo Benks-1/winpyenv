@@ -112,7 +112,7 @@ $saveButton.Add_Click({
         $currentPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
 
         if ($currentPath -notlike "*$newPath*") {
-            $newPathToAdd = $currentPath + ";" + $newPath + ";" + "%PY_APPS_PATH%"
+            $newPathToAdd = "$currentPath;$newPath;%PY_APPS_PATH%"
             [System.Environment]::SetEnvironmentVariable("Path", $newPathToAdd, "User")
         }
         
@@ -124,8 +124,8 @@ $saveButton.Add_Click({
         $currentPath = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
 
         if ($currentPath -notlike "*$newPath*") {
-            $newPathToAdd = $currentPath + ";" + $newPath
-            [System.Environment]::SetEnvironmentVariable("Path", $newPathToAdd, "Machine")
+            $newPathToAdd = "$currentPath;$newPath;%PY_APPS_PATH%"
+            [System.Environment]::SetEnvironmentVariable("PATH", $newPathToAdd, "Machine")
         }
         
         [System.Environment]::SetEnvironmentVariable("PY_ENVS_PATH", $envsPath, "Machine")

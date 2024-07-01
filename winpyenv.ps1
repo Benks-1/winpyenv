@@ -216,7 +216,7 @@ class Venv {
             }
         }
     
-        Write-Host "Creating virtual environment '$EnvName ' with $usedLauncher..." -ForegroundColor Green
+        Write-Host "Creating virtual environment '$EnvName' with $usedLauncher..." -ForegroundColor Green
         if ($Version) {
             & $pythonExe -$Version -m venv $venvPath
         } else {
@@ -381,14 +381,17 @@ class App {
 
     [void] AddApp([string]$AppName, [string]$EnvName ,[string]$Version){
         # TODO: Check if .exe exist othervise remove the app. If it exists also add to mapping 
-        if($null -eq $EnvName){
+        if(($null -eq $EnvName) -or ($EnvName = ' ') ){
             $EnvName = $AppName
         }
         $this.venv.AddVenv($EnvName, $Version, 0)
+        Write-Host "Pip installing '$AppName'." -ForegroundColor Green
         $this.venv.InvokePip($EnvName, "install $AppName")
         $executable = "$($this.ENVS_PATH)\$EnvName\Scripts\$AppName.exe"
         if (Test-Path -Path $executable){
+            Write-Host "Creating '$AppName.ps1' executable." -ForegroundColor Green
             $global = "$($this.APPS_PATH)\$AppName.ps1"
+
             $scriptContent = @"
 param (
     [Parameter(ValueFromRemainingArguments=`$true)]
@@ -400,14 +403,18 @@ param (
             Set-Content -Path $global -Value $scriptContent
             $this.handler.Create($AppName, $EnvName)
         } else {
+            Write-Host "Removing '$AppName.ps1' since it does not contain a '$AppName.exe'." -ForegroundColor Red
             $this.venv.RemoveVenv($EnvName)
         }
     }
 
     [void] RemoveApp([string]$AppName){
+        Write-Host "Searching for `EnvName` of '$AppName'." -ForegroundColor Green
         $envName = $this.handler.GetItem($AppName)
+        Write-Host "Removing `EnvName ($envName)` of App: '$AppName'." -ForegroundColor Green
         $this.handler.Delete($AppName)
         $this.venv.RemoveVenv($envName)
+        Write-Host "Removing executable '$AppName.ps1'." -ForegroundColor Green
         Remove-Item -Path "$($this.APPS_PATH)\$AppName.ps1"
     }
 

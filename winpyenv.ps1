@@ -374,7 +374,7 @@ class App {
 
     [void] ShowApps(){
         Write-Host "Listing all Appliocations in '$($this.APPS_PATH)'..." -ForegroundColor Green
-        Get-ChildItem -Path $this.APPS_PATH -Directory | ForEach-Object {
+        Get-ChildItem -Path $this.APPS_PATH | Where-Object {$_.Name -Match ".ps1"} | ForEach-Object {
             Write-Host $_.Name
         }
     }

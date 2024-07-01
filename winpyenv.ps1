@@ -539,7 +539,7 @@ function Select-IntepreterOption {
 function Select-AppOptions{
     param (
         [Parameter(Position=0)]
-        [ValidateSet("install", "uninstall", "pip")]
+        [ValidateSet("install", "uninstall", "pip", "list")]
         [string]$command
     )
     $app = New-Object App

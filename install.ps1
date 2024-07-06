@@ -1,10 +1,3 @@
-# Start As Admin
-if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-{
-    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
-    exit
-}
-
 # Enable Windows Forms
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -110,26 +103,26 @@ $saveButton.Add_Click({
     if ($radioButton1.Checked) {
         $newPath = (Get-Location).Path
         $currentPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
-
-        if ($currentPath -notlike "*$newPath*") {
-            $newPathToAdd = "$currentPath;$newPath;%PY_APPS_PATH%"
-            [System.Environment]::SetEnvironmentVariable("Path", $newPathToAdd, "User")
-        }
         
         [System.Environment]::SetEnvironmentVariable("PY_ENVS_PATH", $envsPath, "User")
         [System.Environment]::SetEnvironmentVariable("PY_APPS_PATH", $appsPath, "User")
+        
+                if ($currentPath -notlike "*$newPath*") {
+                    $newPathToAdd = "$currentPath;$newPath;%PY_APPS_PATH%"
+                    [System.Environment]::SetEnvironmentVariable("Path", $newPathToAdd, "User")
+                }
 
     } elseif ($radioButton2.Checked) {
         $newPath = (Get-Location).Path
         $currentPath = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
-
-        if ($currentPath -notlike "*$newPath*") {
-            $newPathToAdd = "$currentPath;$newPath;%PY_APPS_PATH%"
-            [System.Environment]::SetEnvironmentVariable("PATH", $newPathToAdd, "Machine")
-        }
         
         [System.Environment]::SetEnvironmentVariable("PY_ENVS_PATH", $envsPath, "Machine")
         [System.Environment]::SetEnvironmentVariable("PY_APPS_PATH", $appsPath, "Machine")
+        
+                if ($currentPath -notlike "*$newPath*") {
+                    $newPathToAdd = "$currentPath;$newPath;%PY_APPS_PATH%"
+                    [System.Environment]::SetEnvironmentVariable("PATH", $newPathToAdd, "Machine")
+                }
     }
 
     # Define the names for the self-signed certificates

@@ -27,7 +27,9 @@ App actions that it should do (something like PIPX):
 
 ## Instalation process
 
-- You should use the `install.ps1` file, to properly install these scripts. It will open a Gui and there you will define the paths. It will add PY_ENVS_PATH, PY_APPS_PATH into the system environmental variables (user-specific or system-wide, you can choose) and, the current folder where you have downloaded these scripts together with `%PY_APPS_PATH%` will go into your Env:PATH so that you can use this tool and the apps you install. And the last thing it will do it will create Self-Signed CodeCertificate and add it to the `WinPyEnv.ps1` at the end so that you can use it. If it doesn't work, create a `file.ps1` and copy the entire code from the original to the new one and save, delete the original and rename the new to have the same name. 
+- You should use the `install.ps1` file, to properly install these scripts.
+- Open powershell with admin rights in the folder with the install.ps1 and winenvpy.ps1, and execute this command: `powershell.exe -ExecutionPolicy Bypass -File .\install.ps1`
+ It will open a Gui and there you will define the paths. It will add PY_ENVS_PATH, PY_APPS_PATH into the system environmental variables (user-specific or system-wide, you can choose) and, the current folder where you have downloaded these scripts together with `%PY_APPS_PATH%` will go into your Env:PATH so that you can use this tool and the apps you install. And the last thing it will do it will create Self-Signed CodeCertificate and add it to the `WinPyEnv.ps1` at the end so that you can use it. If it doesn't work, create a `file.ps1` and copy the entire code from the original to the new one and save, delete the original and rename the new to have the same name. 
 
 
 ## Usage

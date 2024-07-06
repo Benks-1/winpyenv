@@ -107,10 +107,14 @@ $saveButton.Add_Click({
         [System.Environment]::SetEnvironmentVariable("PY_ENVS_PATH", $envsPath, "User")
         [System.Environment]::SetEnvironmentVariable("PY_APPS_PATH", $appsPath, "User")
         
-                if ($currentPath -notlike "*$newPath*") {
-                    $newPathToAdd = "$currentPath;$newPath;%PY_APPS_PATH%"
-                    [System.Environment]::SetEnvironmentVariable("Path", $newPathToAdd, "User")
-                }
+        Write-Host "PY_ENVS_PATH (User) Set to: $envsPath."
+        Write-Host "PY_ENVS_PATH (User) Set to: $appsPath."
+        
+        if ($currentPath -notlike "*$newPath*") {
+            $newPathToAdd = "$currentPath;$newPath;%PY_APPS_PATH%"
+            [System.Environment]::SetEnvironmentVariable("Path", $newPathToAdd, "User")
+            Write-Host "Added to Path (User): $newPath;%PY_APPS_PATH%"
+        }
 
     } elseif ($radioButton2.Checked) {
         $newPath = (Get-Location).Path
@@ -118,15 +122,19 @@ $saveButton.Add_Click({
         
         [System.Environment]::SetEnvironmentVariable("PY_ENVS_PATH", $envsPath, "Machine")
         [System.Environment]::SetEnvironmentVariable("PY_APPS_PATH", $appsPath, "Machine")
-        
-                if ($currentPath -notlike "*$newPath*") {
-                    $newPathToAdd = "$currentPath;$newPath;%PY_APPS_PATH%"
-                    [System.Environment]::SetEnvironmentVariable("PATH", $newPathToAdd, "Machine")
-                }
+
+        Write-Host "PY_ENVS_PATH (System-Wide) Set to: $envsPath."
+        Write-Host "PY_ENVS_PATH (System-Wide) Set to: $appsPath."
+
+        if ($currentPath -notlike "*$newPath*") {
+            $newPathToAdd = "$currentPath;$newPath;%PY_APPS_PATH%"
+            [System.Environment]::SetEnvironmentVariable("PATH", $newPathToAdd, "Machine")
+            Write-Host "Added to Path (System-Wide): $newPath;%PY_APPS_PATH%"
+        }
     }
 
     # Define the names for the self-signed certificates
-    $certificateNames = @("WinPyEnv")
+    $certificateNames = @("winpyenv")
 
     # Using the folder path of the current location of this script
     $scriptPath = $PSScriptRoot

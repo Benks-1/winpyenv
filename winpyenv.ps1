@@ -434,14 +434,42 @@ function Show-Help {
     Write-Host @"
 Usage: winpyenv <tool> <command>
 
+Tool options:
+  - venv
+  Commands:
+    - list
+    - create
+    - activate
+    - delete
+    - shell
+    - pip
+
+  - interpreter
+  Commands:
+    - list-available
+    - install
+    - uninstall
+    - list-installed 
+  - app
+  Commands:
+    - list
+    - install
+    - uninstall
+    - pip
+  - help
+
+
 Examples:
   winpyenv venv list                                         -> Lists all available venvs created on the path Env:ENVS_PATH
   winpyenv venv create -EnvName venv_name                    -> Creates a python venv with the biggest python version if not defined othervise
   winpyenv venv create -EnvName venv_name -Version 3.9       -> Creates a python venv with python version 3.9 (if 3.9 is installed)
+  winpyenv venv create -EnvName venv_name -Activate 1        -> Creates a python venv with the default interpreter and activates the environment.
   winpyenv venv activate -EnvName venv_name                  -> Activates the virtual environment that goes by the name venv_name
   winpyenv venv delete -EnvName venv_name                    -> Removes the virtual environmet that goes by the name venv_name if exists.
   winpyenv venv shell -EnvName venv_name                     -> Starts the python shell of the selected environment.
-  winpyenv venv pip -EnvName venv_name <arguments>           -> Execute pip commands directly to the selected environment.
+  winpyenv venv shell -EnvName venv_name '-c "a = input(''Type you\''re name >''); print(f''Hello {a}'')"' -> Executes the provided commands aginst the python interpreter of the environment that goes by the name venv_name.
+  winpyenv venv pip -EnvName venv_name freeze                -> Provides a list of installed packages in the environment that goes by the name venv_name.
+  winpyenv venv pip -EnvName venv_name install package_name  -> Installs the package_name directly into the environment that goes by the name venv_name.
 
   winpyenv interpreter list-available
   winpyenv interpreter install -Version 3.9 -Sope machine    -> system-wide installation of python version 3.9.latest
@@ -554,6 +582,7 @@ function Select-IntepreterOption {
         }
     }
 }
+
 
 function Select-AppOptions{
     param (

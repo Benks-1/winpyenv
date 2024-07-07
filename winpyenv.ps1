@@ -450,12 +450,14 @@ Tool options:
     - install
     - uninstall
     - list-installed 
+
   - app
   Commands:
     - list
     - install
     - uninstall
     - pip
+
   - help
 
 

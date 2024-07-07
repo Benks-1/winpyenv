@@ -126,7 +126,7 @@ $saveButton.Add_Click({
     }
 
     # Define the names for the self-signed certificates
-    $certificateNames = @("WinPyEnv")
+    $certificateNames = @("winpyenv")
 
     # Using the folder path of the current location of this script
     $scriptPath = $PSScriptRoot

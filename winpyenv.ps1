@@ -152,9 +152,8 @@ class Venv {
         }
     }
 
-    [void] StartPythonShell ([string]$EnvName){
-
-    
+    [void] StartPythonShell ([string]$EnvName, [string]$ArgsString){
+        $Args = $ArgsString -split ' '
         $venvPath = Join-Path -Path $this.ENVS_PATH -ChildPath $EnvName 
         if (-not (Test-Path -Path $venvPath)) {
             Write-Host "Error: Virtual environment '$EnvName ' does not exist in '$($this.ENVS_PATH)'." -ForegroundColor Red
@@ -167,8 +166,14 @@ class Venv {
             Write-Host "Error: Python executable not found in '$venvPath\Scripts'." -ForegroundColor Red
             exit 1
         }
-    
-        & $pythonExe
+        if ($Args) {
+            Write-Host "Executing Python with arguments: $Args"
+            $process = Start-Process -FilePath $pythonExe -ArgumentList $Args -NoNewWindow -Wait -PassThru
+            Write-Host "Exit code: $($process.ExitCode)"
+        } else {
+            Write-Host "Starting Python shell in virtual environment '$EnvName'"
+            & $pythonExe
+        }
     }
 
     [void] AddVenv([string]$EnvName) {
@@ -506,7 +511,7 @@ function Select-VenvOption {
                 Show-Help
                 exit 1
             }
-            $venv.StartPythonShell($EnvName)
+            $venv.StartPythonShell($EnvName, ($Parameters -join ' '))
         }
     }
 }

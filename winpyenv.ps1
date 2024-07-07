@@ -516,7 +516,7 @@ function Select-VenvOption {
                 Show-Help
                 exit 1
             }
-            $venv.AddVenv($EnvName, $Version)
+            $venv.AddVenv($EnvName, $Version, $Activate)
         }
         "list" { $venv.ShowVenvs() }
         "delete" { 

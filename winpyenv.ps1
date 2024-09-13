@@ -14,6 +14,9 @@ param (
     
     [Parameter()]
     [string]$AppName,
+
+    [Parameter()]
+    [string]$Additional,
     
     [Parameter()]
     [int]$Activate = 0,
@@ -413,6 +416,29 @@ param (
         }
     }
 
+    [void] InjectApp([string] $AppName, [string] $Additional){
+        #TODO: The stored (mapped app to env) data should also cointains some info for injected tools
+        Write-Host "Searching for `EnvName` of '$AppName'." -ForegroundColor Green
+        $envName = $this.handler.GetItem($AppName)
+        $additional = $Additional.Replace(".exe", "")
+        $executable = "$($this.ENVS_PATH)\$EnvName\Scripts\$additional.exe"
+        if (Test-Path -Path $executable){
+            Write-Host "Creating '$AppName.ps1' executable." -ForegroundColor Green
+            $global = "$($this.APPS_PATH)\$AppName.ps1"
+
+            $scriptContent = @"
+param (
+    [Parameter(ValueFromRemainingArguments=`$true)]
+    [string[]]`$Parameters
+)
+`$pth = '$executable'
+`& `$pth @Parameters
+"@
+            Set-Content -Path $global -Value $scriptContent
+            $this.handler.Create($AppName, $EnvName)
+        }
+    }
+
     [void] RemoveApp([string]$AppName){
         Write-Host "Searching for `EnvName` of '$AppName'." -ForegroundColor Green
         $envName = $this.handler.GetItem($AppName)
@@ -474,8 +500,8 @@ Examples:
   winpyenv venv pip -EnvName venv_name install package_name  -> Installs the package_name directly into the environment that goes by the name venv_name.
 
   winpyenv interpreter list-available
-  winpyenv interpreter install -Version 3.9 -Sope machine    -> system-wide installation of python version 3.9.latest
-  winpyenv interpreter install -Version 3.9.1 -Sope machine  -> system-wide installation of python version 3.9.1
+  winpyenv interpreter install -Version 3.9 -Scope machine    -> system-wide installation of python version 3.9.latest
+  winpyenv interpreter install -Version 3.9.1 -Scope machine  -> system-wide installation of python version 3.9.1
   winpyenv interpreter install -Version 3.9                  -> This is an example of user installation, same as -Scope user
   winpyenv interpreter uninstall -Version 3.9                -> Removes the instalation of python 3.9.x (Only one 3.9 can be installed)
   winpyenv interpreter list-installed                        -> Lists all python versions installed on pc that can be seen by winget
